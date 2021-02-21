@@ -6,7 +6,9 @@ public class Movement : MonoBehaviour
 {
     Rigidbody rb;
 
-    public AudioSource audioSource;
+    AudioSource audioSource;
+    [SerializeField] AudioClip mainEngine;
+    [SerializeField] AudioClip boom;
 
     public static bool isCrashed;
     [SerializeField] float mainThrust = 100f;
@@ -17,6 +19,7 @@ public class Movement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         isCrashed = false;
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -24,6 +27,11 @@ public class Movement : MonoBehaviour
     {
         ThrustInput();
         RotationInput();
+
+        while (isCrashed == true)
+        {
+            audioSource.PlayOneShot(boom);
+        }
     }
 
     private void ThrustInput()
@@ -34,7 +42,7 @@ public class Movement : MonoBehaviour
             
             if (!audioSource.isPlaying)
             {
-                audioSource.Play();
+                audioSource.PlayOneShot(mainEngine);
             }
         }
         else

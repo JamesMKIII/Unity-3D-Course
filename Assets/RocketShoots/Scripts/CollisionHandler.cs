@@ -5,10 +5,21 @@ using UnityEngine.SceneManagement;
 
 public class CollisionHandler : MonoBehaviour
 {
-    public AudioSource audioSource;
+    AudioSource audioSource;
+    [SerializeField] AudioClip success;
+    [SerializeField] AudioClip boom;
+
+    bool isTransitioning;
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
 
     public void OnCollisionEnter(Collision collision)
     {
+
+
         switch (collision.gameObject.tag)
         {
             case "Respawn":
@@ -35,6 +46,13 @@ public class CollisionHandler : MonoBehaviour
         SceneManager.LoadScene(currentSceneIndex);
     }
 
+    private void Success()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(success);
+        Invoke("NextLevel", 1f);
+    }
+
     private void NextLevel()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
@@ -49,7 +67,8 @@ public class CollisionHandler : MonoBehaviour
     private void Crashed()
     {
         Movement.isCrashed = true;
-        audioSource.Play();
+        audioSource.Stop();
+        audioSource.PlayOneShot(boom);
         Invoke("Respawn", 1f);
     }
 }
